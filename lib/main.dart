@@ -35,8 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String message = "";
 
-  bool click = true;
   bool startRobots = true;
+  bool isConnected = false;
 
   @override
   void initState() {
@@ -97,11 +97,29 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             const SizedBox(height: 50),
             ElevatedButton(
-              style: style,
               onPressed: () {
-                startConnection();
+                isConnected = !isConnected;
+                if (isConnected) {
+                  startConnection();
+                } else {
+                  stopConnection();
+                }
               },
-              child: const Text('Connect'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                    //if (states.contains(MaterialState.pressed)) {
+                    if (!isConnected) {
+                      return Colors.redAccent;
+                    } else {
+                      return Colors.greenAccent;
+                    } // Defer to the widget's default.
+                  },
+                ),
+              ),
+              child: Text(
+                  (isConnected == true) ? ('CONNECTED') : ('DISCONNECTED'),
+                  textScaleFactor: 5),
             ),
             const SizedBox(height: 50),
             Padding(
@@ -110,7 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      click = !click;
                       startRobots = !startRobots;
                       if (socketConnection.isConnected()) {
                         if (startRobots) {
@@ -120,6 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           socketConnection.sendMessage("bcycfcpcrc");
                           showInSnackBar("bcycfcpcrc sended!");
                         }
+                      } else {
+                        showInSnackBar("No Connection!");
                       }
                     });
                   },
