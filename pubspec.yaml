@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   tcp_socket_connection: ^0.3.1
+  group_button: ^5.2.2
 
 dev_dependencies:
   flutter_test:

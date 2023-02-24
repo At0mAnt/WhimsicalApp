@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    stopConnection();
   }
 
   //receiving and sending back a custom message
@@ -98,12 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
-                isConnected = !isConnected;
-                if (isConnected) {
-                  startConnection();
-                } else {
-                  stopConnection();
-                }
+                setState(() {
+                  isConnected = !isConnected;
+                  if (isConnected) {
+                    startConnection();
+                  } else {
+                    stopConnection();
+                  }
+                });
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color?>(
@@ -117,9 +120,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ),
-              child: Text(
-                  (isConnected == true) ? ('CONNECTED') : ('DISCONNECTED'),
-                  textScaleFactor: 5),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                    (isConnected == true) ? ('CONNECTED') : ('DISCONNECTED'),
+                    textScaleFactor: 5),
+              ),
             ),
             const SizedBox(height: 50),
             Padding(
