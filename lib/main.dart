@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tcp_socket_connection/tcp_socket_connection.dart';
+import 'package:group_button/group_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,9 +35,16 @@ class _MyHomePageState extends State<MyHomePage> {
   TcpSocketConnection socketConnection = TcpSocketConnection("192.168.4.1", 80);
 
   String message = "";
+  String yellowStatus = "yf",
+      blueStatus = "bf",
+      greenStatus = "gf",
+      purpleStatus = "pf",
+      redStatus = "rf";
+  String transmitMessage = "";
 
-  bool startRobots = true;
   bool isConnected = false;
+
+  final controller = GroupButtonController();
 
   @override
   void initState() {
@@ -49,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       message = msg;
     });
-    socketConnection.sendMessage("MessageIsReceived :D ");
+    socketConnection.sendMessage("MessageIsReceived");
   }
 
   //starting the connection and listening to the socket asynchronously
@@ -59,7 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
     if (await socketConnection.canConnect(5000, attempts: 3)) {
       //check if it's possible to connect to the endpoint
       await socketConnection.connect(5000, messageReceived, attempts: 3);
-      showInSnackBar("Connected!");
+      if (socketConnection.isConnected()) {
+        showInSnackBar("Connected!");
+        setState(() {
+          isConnected = true;
+        });
+      }
     } else {
       showInSnackBar("Connection Problem!");
     }
@@ -74,6 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
     ScaffoldMessenger.of(context)
         .showSnackBar(new SnackBar(content: new Text(value)));
   }
+
+  void onSelectedMethod() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -94,37 +109,38 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 50),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                setState(() {
-                  isConnected = !isConnected;
-                  if (isConnected) {
-                    startConnection();
-                  } else {
-                    stopConnection();
+                if (!socketConnection.isConnected()) {
+                  startConnection();
+                } else {
+                  stopConnection();
+                  if (!socketConnection.isConnected()) {
+                    setState(() {
+                      isConnected = false;
+                    });
                   }
-                });
+                }
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                   (Set<MaterialState> states) {
                     //if (states.contains(MaterialState.pressed)) {
-                    if (!isConnected) {
-                      return Colors.redAccent;
-                    } else {
+                    if (isConnected) {
                       return Colors.greenAccent;
+                    } else {
+                      return Colors.redAccent;
                     } // Defer to the widget's default.
                   },
                 ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                    (isConnected == true) ? ('CONNECTED') : ('DISCONNECTED'),
-                    textScaleFactor: 5),
+                child: Text((isConnected) ? ('CONNECTED') : ('DISCONNECTED'),
+                    textScaleFactor: 3),
               ),
             ),
             const SizedBox(height: 50),
@@ -134,15 +150,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      startRobots = !startRobots;
                       if (socketConnection.isConnected()) {
-                        if (startRobots) {
-                          socketConnection.sendMessage("boyofoporo");
-                          showInSnackBar("boyofoporo sended!");
-                        } else {
-                          socketConnection.sendMessage("bcycfcpcrc");
-                          showInSnackBar("bcycfcpcrc sended!");
-                        }
+                        socketConnection.sendMessage(transmitMessage);
+                        //showInSnackBar("$transmitMessage sended!");
                       } else {
                         showInSnackBar("No Connection!");
                       }
@@ -152,22 +162,90 @@ class _MyHomePageState extends State<MyHomePage> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color?>(
                       (Set<MaterialState> states) {
                         //if (states.contains(MaterialState.pressed)) {
-                        if (!startRobots) {
-                          return Colors.redAccent;
-                        } else {
+                        if (isConnected) {
                           return Colors.greenAccent;
+                        } else {
+                          return Colors.redAccent;
                         } // Defer to the widget's default.
                       },
                     ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text((startRobots == true) ? ('START') : ('STOP'),
+                    child: Text((isConnected) ? ('SEND') : ('DISABLED'),
                         textScaleFactor: 5),
                   ),
                 ),
               ),
             ),
+            const SizedBox(height: 50),
+            GroupButton(
+                controller: controller,
+                isRadio: false,
+                onSelected: (value, index, isSelected) {
+                  switch (index) {
+                    case 0:
+                      if (isSelected) {
+                        print("case $index is selected");
+                        yellowStatus = "yo";
+                      } else {
+                        print("case $index is unselected");
+                        yellowStatus = "yf";
+                      }
+                      break;
+                    case 1:
+                      if (isSelected) {
+                        print("case $index is selected");
+                        blueStatus = "bo";
+                      } else {
+                        print("case $index is unselected");
+                        blueStatus = "bf";
+                      }
+                      break;
+                    case 2:
+                      if (isSelected) {
+                        print("case $index is selected");
+                        greenStatus = "go";
+                      } else {
+                        print("case $index is unselected");
+                        greenStatus = "gf";
+                      }
+                      break;
+                    case 3:
+                      if (isSelected) {
+                        print("case $index is selected");
+                        purpleStatus = "po";
+                      } else {
+                        print("case $index is unselected");
+                        purpleStatus = "pf";
+                      }
+                      break;
+                    case 4:
+                      if (isSelected) {
+                        print("case $index is selected");
+                        redStatus = "ro";
+                      } else {
+                        print("case $index is unselected");
+                        redStatus = "rf";
+                      }
+                      break;
+                    default:
+                  }
+                  transmitMessage = yellowStatus +
+                      blueStatus +
+                      greenStatus +
+                      purpleStatus +
+                      redStatus;
+                  //socketConnection.sendMessage(transmitMessage);
+                  //print("Transmit Message: $transmitMessage");
+                },
+                buttons: [
+                  "Yellow",
+                  "Blue",
+                  "Green",
+                  "Purple",
+                  "Red",
+                ])
           ],
         ),
       ),
