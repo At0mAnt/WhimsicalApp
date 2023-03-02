@@ -32,7 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TcpSocketConnection socketConnection = TcpSocketConnection("192.168.4.1", 80);
+  TcpSocketConnection socketConnection =
+      TcpSocketConnection("192.168.1.106", 80);
 
   String message = "";
   String yellowStatus = "yf",
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     } else {
-      showInSnackBar("Connection Problem!");
+      showInSnackBar("Connection Problem! Check 192.168.4.1");
     }
   }
 
@@ -190,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         yellowStatus = "yo";
                       } else {
                         print("case $index is unselected");
-                        yellowStatus = "yf";
+                        yellowStatus = "yc";
                       }
                       break;
                     case 1:
@@ -199,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         blueStatus = "bo";
                       } else {
                         print("case $index is unselected");
-                        blueStatus = "bf";
+                        blueStatus = "bc";
                       }
                       break;
                     case 2:
@@ -208,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         greenStatus = "go";
                       } else {
                         print("case $index is unselected");
-                        greenStatus = "gf";
+                        greenStatus = "gc";
                       }
                       break;
                     case 3:
@@ -217,7 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         purpleStatus = "po";
                       } else {
                         print("case $index is unselected");
-                        purpleStatus = "pf";
+                        purpleStatus = "pc";
                       }
                       break;
                     case 4:
@@ -226,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         redStatus = "ro";
                       } else {
                         print("case $index is unselected");
-                        redStatus = "rf";
+                        redStatus = "rc";
                       }
                       break;
                     default:
